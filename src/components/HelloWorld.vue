@@ -22,6 +22,16 @@
 
 <script>
 import axios from 'axios'
+import io from 'socket.io-client'
+var socket = io('ws://localhost:3000', {
+  'reconnectionAttempts': 10 })
+// 发送数据给服务端。
+socket.on('connect', () => {
+  socket.emit('user_login', {
+    socketId: socket.id
+  })
+})
+
 export default {
   name: 'HelloWorld',
   data () {
@@ -34,6 +44,16 @@ export default {
       },
       fileList: []
     }
+  },
+  mounted () {
+    var _this = this
+    socket.on('an event', function (data) {
+      console.error(data)
+      _this.$message({
+        message: '接收服务端数据' + data.some,
+        type: 'success'
+      })
+    })
   },
   methods: {
     handleRemove (file, fileList) {
