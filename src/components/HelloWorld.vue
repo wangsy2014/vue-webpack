@@ -14,24 +14,30 @@
         </el-upload>
       </el-form-item>
     </el-form>
+    <div class="test">
+        <el-button type="" @click="testUrl">这个是测试</el-button>
+        <div class="sub-test popover" style="display:none">
+          <div>2342</div>
 
-    <el-button type="" @click="testUrl">这个是测试</el-button>
+        </div>
+    </div>
+
+    <template>
+      <!-- <div>
+        下面的内容是echart
+      </div>
+      <div id="main" style="width:600px;height:600px;"></div> -->
+      <div class="pic_box">
+           <img src="http://image.zhangxinxu.com/image/study/s/s256/mm1.jpg" />
+      </div>
+
+    </template>
 
   </div>
 </template>
 
 <script>
-import axios from 'axios'
-import io from 'socket.io-client'
-var socket = io('ws://localhost:3000', {
-  'reconnectionAttempts': 10 })
-// 发送数据给服务端。
-socket.on('connect', () => {
-  socket.emit('user_login', {
-    socketId: socket.id
-  })
-})
-
+// import axios from 'axios'
 export default {
   name: 'HelloWorld',
   data () {
@@ -46,14 +52,7 @@ export default {
     }
   },
   mounted () {
-    var _this = this
-    socket.on('an event', function (data) {
-      console.error(data)
-      _this.$message({
-        message: '接收服务端数据' + data.some,
-        type: 'success'
-      })
-    })
+
   },
   methods: {
     handleRemove (file, fileList) {
@@ -86,12 +85,20 @@ export default {
       console.error(fileList)
     },
     testUrl () {
-      axios.get('/api').then((req, res) => {
-        console.error(req)
-        console.error(res)
-      }).catch(err => {
-        console.error(err)
+      $('.sub-test').toggle()
+      $('body').on('mouseup', function (event) {
+        console.error(event.target)
+        if (!$(event.target).parents().is($('.popover'))) {
+          $('.sub-test').hide()
+        }
       })
+
+      // axios.get('/api').then((req, res) => {
+      //   console.error(req)
+      //   console.error(res)
+      // }).catch(err => {
+      //   console.error(err)
+      // })
     }
   }
 }
@@ -117,4 +124,36 @@ export default {
   a {
     color: #42b983;
   }
+
+  #my-echart{
+    background: gray;
+  }
+.pic_box{width:300px; height:300px; background-color:#beceeb;text-align: center;}
+.pic_box img{vertical-align:middle;}
+.pic_box:after{display:inline-block; width:0; height:100%; content:"center"; vertical-align:middle; overflow:hidden;}
+.test{
+  position: relative;
+}
+.sub-test{
+    height: 200px;
+    width: 200px;
+    position: absolute;
+    z-index: 1000;
+    background: red;
+    margin-top: 16px;
+}
+.sub-test:after{
+   content: " ";
+    position: absolute;
+    height: 0;
+    width: 0;
+    border: solid #350f0f00;
+    pointer-events: none;
+    border-width: 16px;
+    margin-left: -16px;
+    border-bottom-color: red;
+    top: -32px;
+    left: 20%;
+
+}
 </style>
